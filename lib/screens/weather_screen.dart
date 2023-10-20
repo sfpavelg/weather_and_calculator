@@ -1,22 +1,18 @@
 import 'package:weather/weather.dart';
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class WeatherScreen extends StatefulWidget {
-  WeatherScreen({Key? key}) : super(key: key);
+  const WeatherScreen({Key? key}) : super(key: key);
 
   @override
-  _WeatherScreenState createState() => _WeatherScreenState();
+  WeatherScreenState createState() => WeatherScreenState();
 }
 
-class _WeatherScreenState extends State<WeatherScreen> {
-  String cityNameDefault = 'Saratov';
-  late String _changedInputCity = cityNameDefault;
-  final WeatherFactory wf = WeatherFactory(
-      "fe6fe6a63b80cd1f3dc6c3f2fed7fb1c",
+class WeatherScreenState extends State<WeatherScreen> {
+  String cityCurrent = 'Saratov';
+  late String _changedInputCity = cityCurrent;
+  final WeatherFactory wf = WeatherFactory("fe6fe6a63b80cd1f3dc6c3f2fed7fb1c",
       language: Language.RUSSIAN);
 
   Future<Weather> _fetchWeather(String cityName) async {
@@ -63,8 +59,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         width: 200,
                         height: 40,
                         child: TextField(
-                          onChanged: (vale) => _changedInputCity = vale,
-                          decoration: InputDecoration(
+                          onChanged: (vale) => cityCurrent = vale,
+                          decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Введите город',
                           ),
@@ -75,6 +71,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
+                          _changedInputCity = cityCurrent;
                           _fetchWeather(_changedInputCity);
                         },
                         child: const Text(
