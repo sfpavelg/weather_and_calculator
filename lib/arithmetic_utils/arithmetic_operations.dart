@@ -47,6 +47,7 @@ class ArithmeticOperations {
       default:
         break;
     }
-    _resultNumber = '$_firstNumber $_operation $_secondNumber = ${result.toString()}';
+    _resultNumber =
+        '$_firstNumber $_operation $_secondNumber = ${result.toString()}';
   }
 }

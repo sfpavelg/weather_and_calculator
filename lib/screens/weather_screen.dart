@@ -44,12 +44,13 @@ class WeatherScreenState extends State<WeatherScreen> {
           builder: (BuildContext context, AsyncSnapshot<Weather> weather) {
             if (weather.hasData) {
               final weatherData = weather.data;
-
-              // Extract necessary weather data from the response
               double? temperature =
                   weatherData!.temperature!.celsius!.roundToDouble();
-              final String description =
-                  'Дата: ${weatherData.date!.day}.${weatherData.date!.month} ';
+              final String date =
+                  '${weatherData.date!.day}.${weatherData.date!.month} ';
+              final double windSpeed = weatherData.windSpeed!.roundToDouble();
+              final String? country = weatherData.country;
+              final String? weatherDescription = weatherData.weatherDescription;
 
               return Column(
                 children: [
@@ -85,17 +86,32 @@ class WeatherScreenState extends State<WeatherScreen> {
                     height: 20,
                   ),
                   Text(
-                    'City: $_changedInputCity',
+                    'Дата: $date',
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Temperature: $temperature °C',
+                    'Город: $_changedInputCity',
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Description: $description',
+                    'Страна: $country',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Температура: $temperature °C',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Скорость ветра: $windSpeed м/с',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Погода: $weatherDescription',
                     style: const TextStyle(fontSize: 18),
                   ),
                 ],

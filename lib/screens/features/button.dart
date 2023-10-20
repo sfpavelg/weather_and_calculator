@@ -6,10 +6,10 @@ class Button extends ElevatedButton {
 
   Button({super.key, required this.value, required this.onPressed})
       : super(
-    onPressed: onPressed,
-    child: Text(
-      value.toString(),
-      style: const TextStyle(fontSize: 20),
-    ),
-  );
+          onPressed: onPressed,
+          child: Text(
+            value.toString(),
+            style: const TextStyle(fontSize: 20),
+          ),
+        );
 }

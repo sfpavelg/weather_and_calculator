@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:weather_and_calculator/screens/calc_screen.dart';
 import 'package:weather_and_calculator/screens/form_screen.dart';
 import 'package:weather_and_calculator/screens/weather_screen.dart';
 
-
 class HomeScreen extends StatelessWidget {
-   const HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  WeatherScreen()),
+                MaterialPageRoute(builder: (context) => WeatherScreen()),
               );
             },
             child: const Text('Weather'),

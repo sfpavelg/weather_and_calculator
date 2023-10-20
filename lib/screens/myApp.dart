@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:weather_and_calculator/screens/home_screen.dart';
 

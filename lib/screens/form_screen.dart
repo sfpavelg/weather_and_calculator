@@ -1,17 +1,16 @@
-
 import 'package:flutter/material.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({super.key});
 
   @override
-  _FormScreenState createState() => _FormScreenState();
+  FormScreenState createState() => FormScreenState();
 }
 
-class _FormScreenState extends State<FormScreen> {
+class FormScreenState extends State<FormScreen> {
   // Declare form fields variables
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   // Define form validation and submission logic
   void _submitForm() {

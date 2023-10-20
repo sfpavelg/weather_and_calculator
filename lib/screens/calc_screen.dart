@@ -6,10 +6,10 @@ class CalcScreen extends StatefulWidget {
   const CalcScreen({Key? key}) : super(key: key);
 
   @override
-  _CalcScreenState createState() => _CalcScreenState();
+  CalcScreenState createState() => CalcScreenState();
 }
 
-class _CalcScreenState extends State<CalcScreen> {
+class CalcScreenState extends State<CalcScreen> {
   final ArithmeticOperations _arithmeticOperations = ArithmeticOperations();
 
   @override
