@@ -1,31 +1,4 @@
-//
-// import 'package:flutter/material.dart';
-//
-// class WeatherScreen extends StatefulWidget {
-//   const WeatherScreen({super.key});
-//
-//   @override
-//   _WeatherScreenState createState() => _WeatherScreenState();
-// }
-//
-// class _WeatherScreenState extends State<WeatherScreen> {
-//   // Declare weather variables
-//
-//   // Define weather API integration logic and user interface
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Weather'),
-//       ),
-//       body: Container(
-//         padding: EdgeInsets.all(16),
-//         // Build weather user interface
-//       ),
-//     );
-//   }
-// }
+import 'package:weather/weather.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -33,33 +6,31 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({Key? key}) : super(key: key);
+  WeatherScreen({Key? key}) : super(key: key);
 
   @override
   _WeatherScreenState createState() => _WeatherScreenState();
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  String _cityName = 'Saratov';
+  String cityNameDefault = 'Saratov';
+  late String _changedInputCity = cityNameDefault;
+  final WeatherFactory wf = WeatherFactory(
+      "fe6fe6a63b80cd1f3dc6c3f2fed7fb1c",
+      language: Language.RUSSIAN);
 
-  Future<Map<String, dynamic>> _fetchWeather() async {
-    final url = Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$_cityName&appid=YOUR_API_KEY');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load weather data');
-    }
+  Future<Weather> _fetchWeather(String cityName) async {
+    Weather w = await wf.currentWeatherByCityName(cityName);
+    return w;
   }
 
   @override
   void initState() {
     super.initState();
     // Start fetching weather data every 2-3 seconds
-    Timer.periodic(Duration(seconds: 2), (Timer timer) {
+    Timer.periodic(const Duration(seconds: 2), (Timer timer) {
       setState(() {
-        _fetchWeather();
+        _fetchWeather(_changedInputCity);
       });
     });
   }
@@ -68,42 +39,72 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Weather'),
+        title: const Text('Weather'),
       ),
       body: Container(
-        padding: EdgeInsets.all(16),
-        child: FutureBuilder<Map<String, dynamic>>(
-          future: _fetchWeather(),
-          builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-            if (snapshot.hasData) {
-              final weatherData = snapshot.data;
+        padding: const EdgeInsets.all(16),
+        child: FutureBuilder<Weather>(
+          future: _fetchWeather(_changedInputCity),
+          builder: (BuildContext context, AsyncSnapshot<Weather> weather) {
+            if (weather.hasData) {
+              final weatherData = weather.data;
 
               // Extract necessary weather data from the response
-              final temperature = weatherData?['main']['temp'];
-              final description = weatherData?['weather'][0]['description'];
+              double? temperature =
+                  weatherData!.temperature!.celsius!.roundToDouble();
+              final String description =
+                  'Дата: ${weatherData.date!.day}.${weatherData.date!.month} ';
 
               return Column(
                 children: [
-                  Text(
-                    'City: $_cityName',
-                    style: TextStyle(fontSize: 18),
+                  Row(
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 40,
+                        child: TextField(
+                          onChanged: (vale) => _changedInputCity = vale,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Введите город',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _fetchWeather(_changedInputCity);
+                        },
+                        child: const Text(
+                          'Изменить',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'City: $_changedInputCity',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 16),
                   Text(
                     'Temperature: $temperature °C',
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     'Description: $description',
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               );
-            } else if (snapshot.hasError) {
-              return Text('Failed to load weather data');
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         ),
