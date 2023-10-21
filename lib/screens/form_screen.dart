@@ -73,7 +73,7 @@ class FormScreenState extends State<FormScreen> {
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Имя'),
                 onChanged: (value) {
-                  if (value.isNotEmpty && !RegExp(r'^[а-яА-Яa-zA-Z]+$').hasMatch(value)) {
+                  if (value.isNotEmpty && !RegExp(r'^[а-яА-Яa-zA-Z ]+$').hasMatch(value)) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -129,10 +129,7 @@ class FormScreenState extends State<FormScreen> {
                 controller: _dobController,
                 decoration: const InputDecoration(labelText: 'Дата рождения'),
                 onChanged: (value) {
-                  // if (!RegExp(r'^\d{2}\.\d{1}\.\d{4}$').hasMatch(value)) {
-                  // if (!RegExp(r'^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$').hasMatch(value)) {
-                  // if (value.isNotEmpty && !RegExp(r'^[0-3]?[0-9].[0-3]?[0-9].(?:[0-9]{2})?[0-9]{2}$').hasMatch(value)) {
-                  if (value.isNotEmpty && !RegExp(r'^\d{1}[0-1]$').hasMatch(value)) {
+                  if (value.isNotEmpty && !RegExp(r'^[0-9.]+$').hasMatch(value)) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -163,6 +160,18 @@ class FormScreenState extends State<FormScreen> {
                 onChanged: (value) {
                   _password = value;
                 },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Здесь добавьте логику для загрузки изображения
+                    },
+                    icon: Icon(Icons.image),
+                    label: Text('Загрузить изображение'),
+                  ),
+                ],
               ),
               ElevatedButton(
                 onPressed: _submitForm,
