@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 
 class FormScreen extends StatefulWidget {
-  const FormScreen({super.key});
+  const FormScreen({Key? key}) : super(key: key);
 
   @override
   FormScreenState createState() => FormScreenState();
 }
 
 class FormScreenState extends State<FormScreen> {
-  // Declare form fields variables
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String _name = '';
+  String _age = '';
+  String _dob = '';
+  String _password = '';
 
-  // Define form validation and submission logic
   void _submitForm() {
-    // Validate form fields
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty) {
+    if (_nameController.text.isEmpty ||
+        _ageController.text.isEmpty ||
+        _dobController.text.isEmpty) {
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Please fill in all fields.'),
+            title: const Text('Внимание'),
+            content: const Text('Нужно обязательно заполнить все поля!'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -35,8 +40,22 @@ class FormScreenState extends State<FormScreen> {
       );
     } else {
       // Form submission logic
-      // Process the data
+      setState(() {
+        _name = _nameController.text;
+        _age = _ageController.text;
+        _dob = _dobController.text;
+        _password = _passwordController.text;
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    _dobController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,22 +71,97 @@ class FormScreenState extends State<FormScreen> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your name';
+                decoration: const InputDecoration(labelText: 'Имя'),
+                onChanged: (value) {
+                  if (value.isNotEmpty && !RegExp(r'^[а-яА-Яa-zA-Z]+$').hasMatch(value)) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Ошибка'),
+                          content: const Text('Разрешено вводить только буквы'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _nameController.text = _nameController.text.substring(0, _nameController.text.length - 1);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('ОК'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    _name = value;
                   }
-                  return null;
                 },
               ),
               TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your email';
+                controller: _ageController,
+                decoration: const InputDecoration(labelText: 'Возраст'),
+                onChanged: (value) {
+                  if (value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Ошибка'),
+                          content: const Text('Разрешено вводить только цифры'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _ageController.text = _ageController.text.substring(0, _ageController.text.length - 1);
+                                Navigator.pop(context);
+                                },
+                              child: const Text('ОК'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    _age = value;
                   }
-                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _dobController,
+                decoration: const InputDecoration(labelText: 'Дата рождения'),
+                onChanged: (value) {
+                  // if (!RegExp(r'^\d{2}\.\d{1}\.\d{4}$').hasMatch(value)) {
+                  // if (!RegExp(r'^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$').hasMatch(value)) {
+                  // if (value.isNotEmpty && !RegExp(r'^[0-3]?[0-9].[0-3]?[0-9].(?:[0-9]{2})?[0-9]{2}$').hasMatch(value)) {
+                  if (value.isNotEmpty && !RegExp(r'^\d{1}[0-1]$').hasMatch(value)) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Ошибка'),
+                          content: const Text('Неверный формат даты\nПример ввода: 16.0.1980'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _dobController.text = _dobController.text.substring(0, _dobController.text.length - 1);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('ОК'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    _dob = value;
+                  }
+                },
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Пароль'),
+                obscureText: true,
+                onChanged: (value) {
+                  _password = value;
                 },
               ),
               ElevatedButton(
@@ -80,4 +174,12 @@ class FormScreenState extends State<FormScreen> {
       ),
     );
   }
+
+  String get password => _password;
+
+  String get dob => _dob;
+
+  String get age => _age;
+
+  String get name => _name;
 }
